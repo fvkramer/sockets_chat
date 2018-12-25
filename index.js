@@ -6,6 +6,10 @@ app.get('/', (req, res) => {
   return res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', (socket) => console.log("a user connected"));
+io.on('connection', function (socket) {
+  socket.on('chat message', function (msg) {
+    console.log('message: ' + msg);
+  });
+});
 
 http.listen(3000, () => console.log("Listening on 3000"));
