@@ -20,12 +20,30 @@ const app = require("express")();
 const httpServer = require('http').Server(app)
 const io = require("socket.io")(httpServer);
 
+httpServer.listen(3000, () => console.log("Listening on server 3000"));
+
 app.get('/', (req, res) => {
   return res.sendFile(__dirname + '/index.html');
 })
 
+const SOCKET_LIST = {};
+
 io.on('connection', socket => {
-  console.log("Socket connected");
+  socket.id = Math.random();
+  socket.x = 0;
+  socket.y = 0;
+  SOCKET_LIST[socket.id] = socket;
+
 })
 
-httpServer.listen(3000, () => console.log("Listening on server 3000"));
+setInterval(() => {
+  for (var i in SOCKET_LIST) {
+    var socket = SOCKET_LIST[i];
+    socket.x++;
+    socket.y++;
+    socket.emit('newPosition', {
+      x: socket.x,
+      y: socket.y
+    })
+  }
+}, 1000/25);
