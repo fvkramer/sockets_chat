@@ -33,17 +33,20 @@ io.on('connection', socket => {
   socket.x = 0;
   socket.y = 0;
   SOCKET_LIST[socket.id] = socket;
-
 })
 
 setInterval(() => {
+  var pack = [];
   for (var i in SOCKET_LIST) {
-    var socket = SOCKET_LIST[i];
+    let socket = SOCKET_LIST[i];
     socket.x++;
     socket.y++;
-    socket.emit('newPosition', {
-      x: socket.x,
-      y: socket.y
-    })
+    pack.push({ x: socket.x, y: socket.y });
   }
+
+  for (var i in SOCKET_LIST) {
+    let socket = SOCKET_LIST[i];
+    socket.emit('newPositions', pack);
+  }
+
 }, 1000/25);
