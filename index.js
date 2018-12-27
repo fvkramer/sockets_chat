@@ -33,6 +33,8 @@ io.on('connection', socket => {
   socket.x = 0;
   socket.y = 0;
   SOCKET_LIST[socket.id] = socket;
+
+  socket.on('disconnect', () => delete SOCKET_LIST[socket.id])
 })
 
 setInterval(() => {
