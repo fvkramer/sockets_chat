@@ -92,7 +92,21 @@
     for (let i = 0; i < data.length; i++) {
       ctx.fillText(data[i].number, data[i].x, data[i].y);
     }
-    
   })
+
+  document.onkeydown = event => {
+    if (event.keyCode === 68) socket.emit("keyPressed", {inputId: 'right', state: true })  //d
+    if (event.keyCode === 83) socket.emit("keyPressed", { inputId: 'down', state: true })//s
+    if (event.keyCode === 65) socket.emit("keyPressed", { inputId: 'left', state: true })//a
+    if (event.keyCode === 87) socket.emit("keyPressed", { inputId: 'up', state: true })//w
+  }
+
+
+  document.onkeyup = event => {
+      if (event.keyCode === 68) socket.emit("keyPressed", { inputId: 'right', state: false })  //d
+      if (event.keyCode === 83) socket.emit("keyPressed", { inputId: 'down', state: false })//s
+      if (event.keyCode === 65) socket.emit("keyPressed", { inputId: 'left', state: false })//a
+      if (event.keyCode === 87) socket.emit("keyPressed", { inputId: 'up', state: false })//w
+    }
 
 </script>

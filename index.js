@@ -35,9 +35,29 @@ class Player {
     this.y = 250;
     this.id = id;
     this.number = "" + Math.floor(10 * Math.random());
-    return this;
+    this.pressingRight = false;
+    this.pressingLeft = false;
+    this.pressingUp = false;
+    this.pressingDown = false;
+    this.maxSpd = 10;
+
+    this.updatePosition = this.updatePosition.bind(this);
   }
 
+  updatePosition() {
+    if (this.pressingRight) {
+      this.x += this.maxSpd;
+    }
+    if (this.pressingLeft) {
+      this.x -= this.maxSpd;
+    }
+    if (this.pressingUp) {
+      this.y -= this.maxSpd;
+    }
+    if (this.pressingDown) {
+      this.y += this.maxSpd;
+    }
+  }
 }
 
 io.on('connection', socket => {
@@ -51,14 +71,24 @@ io.on('connection', socket => {
     delete SOCKET_LIST[socket.id]
     delete PLAYER_LIST[socket.id]
   })
+
+  socket.on('keyPressed', (data) => {
+    if (data.inputId === 'left')
+      player.pressingLeft = data.state;
+    if (data.inputId === 'right')
+      player.pressingRight = data.state;
+    if (data.inputId === 'up')
+      player.pressingUp = data.state;
+    if (data.inputId === 'down')
+      player.pressingDown = data.state;
+  })
 })
 
 setInterval(() => {
   var pack = [];
   for (var i in PLAYER_LIST) {
     let player = PLAYER_LIST[i];
-    player.x++;
-    player.y++;
+    player.updatePosition();
     pack.push({ x: player.x, y: player.y, number: player.number });
   }
 
